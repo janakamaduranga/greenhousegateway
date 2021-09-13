@@ -1,0 +1,37 @@
+server:
+  port: 8080
+logging:
+  level:
+    ROOT: TRACE
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: greenhousegateway
+  cloud:
+    gateway:
+      routes:
+        - id: loginModule
+          uri: lb://GREENHOUSELOGIN
+          predicates:
+            - Path=/signup, /signIn
+        - id: greenHouseManger
+          uri: lb://GREENHOUSEMANAGER
+          predicates:
+            - Path=/user/commands, /device/readings, /device/commands/**, /user/readings/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - OPTIONS
+              - HEAD
+              - PUT
+              - POST
+              - DELETE
+              - PATCH
